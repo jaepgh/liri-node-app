@@ -1,47 +1,49 @@
-require("dotenv").config();
 
-var myKeys = require("./keys");
+var reader = require('fs');
+var Movie = require('./classes/movie_class');
+var Spotify = require('./classes/spotify_class');
+var Twitter = require('./classes/twiter_class');
+var Auxiliars = require('./classes/auxiliar_class');
 
-var spotify = new Spotify(keys.spotify);
-var twitter = new Twitter(keys.twitter);
+var movieObj = new Movie();
+var spotifyObj = new Spotify();
+var twitterObj = new Twitter();
+var auxiliar = new Auxiliars();
 
 var command = process.argv[2];
-var parameter = process.argv.slice(3);
+var parameter = process.argv.slice(3).join(command === "spotify-this-song" ? ' ' : '+');
 
+function executeCommand(command, parameter) {
+    switch (command) {
+        case "my-tweets":
+            twitterObj.getTweets(20);
+            break;
 
-switch (command) {
-    case "my-tweets":
-        //show last 20 tweets 
+        case "spotify-this-song":
+            spotifyObj.getTrack(parameter);
+            break;
 
-        //Save to log file the executed command
-        
-        break;
+        case "movie-this":
+            movieObj.getMovie(parameter);
+            break;
 
-    case "spotify-this-song":
-        //Based on a song it will return the Artist, song's name, preview link of the song from Spotify and the album that the song is from
-        //Default value is "The Sign" by Ace of Base.
+        case "do-what-it-says":
+            reader.readFile('./random.txt', 'utf8', function (err, data) {
+                if (err) {
+                    return console.log(err);
+                } else {
+                    var randomCommand = auxiliar.replaceAll(data, '"', '').split(",");
+                    executeCommand(randomCommand[0], randomCommand[1])
+                }
+            });
+            break;
 
-        //Save to log file the executed command
-        
-        break;
-
-    case "movie-this":
-        //Based on a movie name it will return Title, Year, IMDB Rating, Rotten Tomatoes Rating, Country, Language, Plot and Actors
-        //Default value Mr. Nobody.
-
-        //Save to log file the executed command
-        
-        break;
-
-    case "do-what-it-says":
-        //Using the fs Node package 
-
-        //Save to log file the executed command
-
-        break;
-
-    default:
-        //Invalid option
-        console.log("Incorrect entry liri doesn't support this command!\nPlease try again.");
-        break;
+        default:
+            //Invalid option
+            console.log("Incorrect entry liri doesn't support this command!\nPlease try again.");
+            break;
+    }
 }
+//Execute user command
+executeCommand(command, parameter);
+auxiliar.logToFile(command, parameter);
