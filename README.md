@@ -20,4 +20,4 @@ You just need to ask:
 - nodejs and javascript
 
 
-<p align="center">Shane Danner, Jesus Vasquez and Jose A Esquivel (C) 2018. All Rights Reserved.</p>
+<p align="center">Jose A Esquivel (C) 2018. All Rights Reserved.</p>
